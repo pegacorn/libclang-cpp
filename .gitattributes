@@ -1,0 +1,7 @@
+*	-text !eol
+.gitattributes	text
+.gitignore		text
+
+*.txt	text
+*.cpp	text
+*.hpp	text
