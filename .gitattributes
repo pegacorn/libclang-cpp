@@ -2,6 +2,13 @@
 .gitattributes	text
 .gitignore		text
 
-*.txt	text
-*.cpp	text
-*.hpp	text
+*.txt			text
+
+*.cpp			text
+*.hpp			text
+*.c				text
+*.h				text
+*.py			text
+
+*.modulemap		text
+*.json			text
