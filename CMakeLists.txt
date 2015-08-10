@@ -8,16 +8,19 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(libclang-cpp_sources
   ${PROJECT_SOURCE_DIR}/src/Index.cpp
   ${PROJECT_SOURCE_DIR}/src/TranslationUnit.cpp
+  ${PROJECT_SOURCE_DIR}/src/File.cpp
+  ${PROJECT_SOURCE_DIR}/src/Cursor.cpp
+  ${PROJECT_SOURCE_DIR}/src/CursorKind.cpp
   )
-add_library(clang-cpp			SHARED ${libclang-cpp_sources})
-add_library(clang-cpp-static	STATIC ${libclang-cpp_sources})
+add_library(clang++			SHARED ${libclang-cpp_sources})
+add_library(clang++-static	STATIC ${libclang-cpp_sources})
 
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
-target_compile_definitions(clang-cpp
+target_compile_definitions(clang++
   PUBLIC	"CLANGXX_DLL"
   )
-set_target_properties(clang-cpp
+set_target_properties(clang++
   PROPERTIES 
   DEFINE_SYMBOL	"CLANGXX_EXPORTS"
   )
@@ -31,9 +34,9 @@ if("${static_library_prefix}" STREQUAL "")
   endif()
 endif()
 message("static_library_prefix = ${static_library_prefix}")
-set_target_properties(clang-cpp-static
+set_target_properties(clang++-static
   PROPERTIES
-  OUTPUT_NAME	"clang-cpp"
+  OUTPUT_NAME	"clang++"
   PREFIX		"${static_library_prefix}"
   )
 
@@ -44,4 +47,4 @@ elseif(MSVC)
 #  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /I<clang-c-include-dir> /L<clang-c-lib-dir>")
 endif()
 
-target_link_libraries(clang-cpp clang)
+target_link_libraries(clang++ clang)

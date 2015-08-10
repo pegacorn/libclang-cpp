@@ -34,6 +34,17 @@ inline bool is_null(const CXTUResourceUsage &cxTUResourceUsage)
 		&& (cxTUResourceUsage.entries == nullptr);
 }
 
+inline bool is_null(const CXCursor &cx_cursor)
+{
+	static const CXCursor null_cursor(clang_getNullCursor());
+
+	return cx_cursor.kind == null_cursor.kind
+		&& cx_cursor.xdata == null_cursor.xdata
+		&& cx_cursor.data[0] == null_cursor.data[0]
+		&& cx_cursor.data[1] == null_cursor.data[1]
+		&& cx_cursor.data[2] == null_cursor.data[2];
+}
+
 
 template<typename TCXObject, void (*t_disposer)(TCXObject)>
 struct CXObjectDisposer
@@ -140,7 +151,7 @@ class UniqueCXObject
 #define clangxx_DEFINE_UniqueCXObject(DCXObject, d_disposer) \
 	using Unique ## DCXObject = UniqueCXObject<DCXObject, d_disposer>
 #define clangxx_DEFINE_UniqueCXObjectPtr(DCXObject, d_disposer) \
-	using Unique ## DCXObject = UniqueCXObject<DCXObject *, d_disposer>
+	using Unique ## DCXObject ## Ptr = UniqueCXObject<DCXObject *, d_disposer>
 
 // BuildSystem.h
 clangxx_DEFINE_UniqueCXObject(CXVirtualFileOverlay, &clang_VirtualFileOverlay_dispose);

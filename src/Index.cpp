@@ -20,6 +20,7 @@ std::shared_ptr<Index> Index::create(bool excludeDecls/* = false*/)
 	if ( !cx_index ) {
 // TODO: throw
 	}
+
 //	return std::make_shared<Index>(std::move(cx_index));
 	return std::shared_ptr<Index>(new Index(std::move(cx_index)));
 }

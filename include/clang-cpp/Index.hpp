@@ -11,7 +11,6 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include "clang-c/Index.h"
 #include "clang-cpp/switch_port.hpp"
 #include "clang-cpp/TranslationUnit.hpp"
 #include "clang-cpp/UniqueCXObject.hpp"
@@ -29,7 +28,7 @@ class CLANGXX_API Index: public std::enable_shared_from_this<Index>
 	UniqueCXIndex	m_cx_index;
 
   private:
-	explicit Index(UniqueCXIndex &&cx_index) noexcept
+	Index(UniqueCXIndex &&cx_index) noexcept
 		: m_cx_index(std::move(cx_index))
 	{}
 
@@ -47,11 +46,11 @@ class CLANGXX_API Index: public std::enable_shared_from_this<Index>
 		return m_cx_index.get();
 	}
 
-	std::unique_ptr<TranslationUnit> read(const std::string &path) {
+	std::shared_ptr<TranslationUnit> read(const std::string &path) {
 		return TranslationUnit::from_ast_file(path, shared_from_this());
 	}
 
-	std::unique_ptr<TranslationUnit> parse(
+	std::shared_ptr<TranslationUnit> parse(
 	  const std::string &path, const std::vector<std::string> *args = nullptr,
 	  const std::vector<UnsavedFile> *unsaved_files = nullptr,
 	  CXTranslationUnit_Flags options = CXTranslationUnit_None)
