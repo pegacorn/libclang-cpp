@@ -9,6 +9,7 @@
 #include <memory>
 #include <utility>
 #include "clang-c/Index.h"
+#include "clang-cpp/Exception.hpp"
 #include "clang-cpp/UniqueCXObject.hpp"
 
 
@@ -18,7 +19,7 @@ std::shared_ptr<Index> Index::create(bool excludeDecls/* = false*/)
 {
 	UniqueCXIndex cx_index(clang_createIndex(excludeDecls, 0));
 	if ( !cx_index ) {
-// TODO: throw
+		CLANGXX_THROW_LogicError("Error creating index.");
 	}
 
 //	return std::make_shared<Index>(std::move(cx_index));

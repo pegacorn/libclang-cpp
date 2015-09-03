@@ -23,11 +23,9 @@ namespace clangxx {
 
 class Index;
 
-class TranslationUnitImpl;
-
 class CLANGXX_API TranslationUnit: public std::enable_shared_from_this<TranslationUnit>
 {
-	friend TranslationUnitImpl;
+	class Impl;
 
   public:
 	static std::shared_ptr<TranslationUnit> from_source(
@@ -40,21 +38,10 @@ class CLANGXX_API TranslationUnit: public std::enable_shared_from_this<Translati
 	  const std::string &filename, std::shared_ptr<Index> index = nullptr);
 
   private:
-	TranslationUnitImpl	*m_impl;
+	std::unique_ptr<Impl>	m_impl;
 
   private:
 	TranslationUnit(UniqueCXTranslationUnit &&ptr, std::shared_ptr<Index> &index);
-
-	TranslationUnit(const TranslationUnit &) = delete;
-
-  public:
-	TranslationUnit(TranslationUnit &&other) noexcept;
-
-	~TranslationUnit();
-
-	TranslationUnit &operator=(const TranslationUnit &) = delete;
-
-	TranslationUnit &operator=(TranslationUnit &&rhs) noexcept;
 
   public:
 	CXTranslationUnit native_handle() const;

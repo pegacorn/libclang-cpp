@@ -11,6 +11,8 @@
 #include <string>
 #include <unordered_map>
 #include <utility>
+#include "clang-c/Index.h"
+#include "clang-cpp/Exception.hpp"
 
 
 namespace {
@@ -249,7 +251,9 @@ CursorKind CursorKind::from_id(CXCursorKind cx_cursor_kind)
 {
 	const decltype(s_kinds)::const_iterator iter = s_kinds.find(cx_cursor_kind);
 	if ( iter == s_kinds.end() ) {
-// TODO: throw
+		std::ostringstream ostream;
+		ostream << "Unknown cursor kind " << cx_cursor_kind;
+		throw std::invalid_argument(ostream.str());
 	}
 	return iter->second;
 }
@@ -258,7 +262,7 @@ CursorKind::CursorKind(CXCursorKind value, const std::string &name)
 {
 	const decltype(s_kinds)::const_iterator iter = s_kinds.find(value);
 	if ( iter != s_kinds.end() ) {
-// TODO: throw
+		throw std::invalid_argument("CursorKind already loaded");
 	}
 	m_cx_cursor_kind = value;
 	s_kinds[value] = *this;
@@ -270,7 +274,7 @@ std::string CursorKind::name() const
 {
 	const decltype(s_name_map)::const_iterator iter = s_name_map.find(*this);
 	if ( iter == s_name_map.end() ) {
-// TODO: throw
+		CLANGXX_THROW_LogicError("Error getting the enumeration name of this cursor kind.");
 	}
 	return iter->second;
 }

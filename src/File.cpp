@@ -12,6 +12,7 @@
 #include <time.h>
 #include <utility>
 #include "clang-c/Index.h"
+#include "clang-cpp/Exception.hpp"
 #include "clang-cpp/TranslationUnit.hpp"
 #include "clang-cpp/UniqueCXObject.hpp"
 
@@ -23,7 +24,7 @@ File File::from_name(std::shared_ptr<TranslationUnit> translation_unit,
 {
 	CXFile cx_file(clang_getFile(translation_unit->native_handle(), file_name.c_str()));
 	if ( !cx_file ) {
-// TODO: throw
+		CLANGXX_THROW_LogicError("The file was not a part of this translation unit.");
 	}
 
 	return File(std::move(cx_file), translation_unit);
@@ -33,7 +34,7 @@ std::string File::name() const
 {
 	UniqueCXString cx_string(clang_getFileName(m_cx_file));
 	if ( !cx_string ) {
-// TODO: throw
+		CLANGXX_THROW_LogicError("Error retrieving the complete file and path name of the given file.");
 	}
 
 	return clang_getCString(cx_string.get());

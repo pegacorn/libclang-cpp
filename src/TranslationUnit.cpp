@@ -15,6 +15,7 @@
 #include <utility>
 #include <vector>
 #include "clang-c/CXString.h"
+#include "clang-cpp/Exception.hpp"
 #include "clang-cpp/File.hpp"
 #include "clang-cpp/Index.hpp"
 #include "clang-cpp/memory.hpp"
@@ -25,7 +26,7 @@
 
 namespace clangxx {
 
-class TranslationUnitImpl
+class TranslationUnit::Impl
 {
   public:
 	static std::shared_ptr<TranslationUnit> from_source(
@@ -64,7 +65,7 @@ class TranslationUnitImpl
 			unsaved_array.data(), unsaved_array.size(),
 			options));
 		if ( !ptr ) {
-//TODO			throw TranslationUnitLoadError{"Error parsing translation unit."};
+			CLANGXX_THROW_TranslationUnitLoadError("Error parsing translation unit.");
 		}
 
 //		return make_shared<TranslationUnit>(std::move(ptr), index);
@@ -77,7 +78,7 @@ class TranslationUnitImpl
 		UniqueCXTranslationUnit ptr(clang_createTranslationUnit(
 									index->native_handle(), filename.c_str()));
 		if ( !ptr ) {
-//TODO			throw TranslationUnitLoadError{filename};
+			CLANGXX_THROW_TranslationUnitLoadError(filename);
 		}
 
 //		return make_shared<TranslationUnit>(std::move(ptr), index);
@@ -90,7 +91,7 @@ class TranslationUnitImpl
 	UniqueCXTranslationUnit	m_cx_translation_unit;
 
   public:
-	TranslationUnitImpl(UniqueCXTranslationUnit &&ptr, std::shared_ptr<Index> &index)
+	Impl(UniqueCXTranslationUnit &&ptr, std::shared_ptr<Index> &index)
 		: m_index(index)
 		, m_cx_translation_unit(std::move(ptr))
 	{}
@@ -104,7 +105,7 @@ class TranslationUnitImpl
 		UniqueCXString cx_string(clang_getTranslationUnitSpelling(
 								 m_cx_translation_unit.get()));
 		if ( !cx_string ) {
-// TODO: thorw
+			CLANGXX_THROW_LogicError("Error getting translation unit spelling");
 		}
 
 		return clang_getCString(cx_string.get());
@@ -136,22 +137,21 @@ class TranslationUnitImpl
 			m_cx_translation_unit.get(),
 			unsaved_array.size(), unsaved_array.data(),
 			options)};
-		if ( error_code ) {
-//TODO: throw
+		if ( error_code != 0 ) {
+			CLANGXX_THROW_TranslationUnitLoadError("Error reparsing translation unit.");
 		}
 	}
 
 	void save(const std::string &filename) {
 		const auto options = clang_defaultSaveOptions(m_cx_translation_unit.get());
-		const int error_code{clang_saveTranslationUnit(
+		const int result{clang_saveTranslationUnit(
 			  m_cx_translation_unit.get(), filename.c_str(), options)};
-		if ( !error_code ) {
-//TODO: throw
+		if ( result != 0 ) {
+			CLANGXX_THROW_TranslationUnitSaveError(CXSaveError(result),
+												   "Error saving TranslationUnit.");
 		}
 	}
-}; // class TranslationUnitImpl
-
-using Impl = TranslationUnitImpl;
+}; // class Impl
 
 std::shared_ptr<TranslationUnit> TranslationUnit::from_source(
   const std::string &filename, const std::vector<std::string> *args/* = nullptr*/,
@@ -189,23 +189,6 @@ std::shared_ptr<TranslationUnit> TranslationUnit::from_ast_file(
 TranslationUnit::TranslationUnit(UniqueCXTranslationUnit &&ptr, std::shared_ptr<Index> &index)
 	: m_impl(new Impl(std::move(ptr), index))
 {}
-
-TranslationUnit::TranslationUnit(TranslationUnit &&other) noexcept
-{
-	m_impl = std::move(other.m_impl);
-	other.m_impl = nullptr;
-}
-
-TranslationUnit::~TranslationUnit()
-{
-	delete m_impl;
-}
-
-TranslationUnit &TranslationUnit::operator=(TranslationUnit &&rhs) noexcept
-{
-	std::swap(m_impl, rhs.m_impl);
-	return *this;
-}
 
 CXTranslationUnit TranslationUnit::native_handle() const
 {

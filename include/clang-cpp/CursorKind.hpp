@@ -51,8 +51,12 @@ class CLANGXX_API CursorKind
 	CursorKind(CXCursorKind value, const std::string &name);
 
   public:
-	CXCursorKind from_param() const {
+	CXCursorKind value() const {
 		return m_cx_cursor_kind;
+	}
+
+	CXCursorKind from_param() const {
+		return value();
 	}
 
 	std::string name() const;

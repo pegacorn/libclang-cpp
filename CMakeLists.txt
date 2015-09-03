@@ -11,6 +11,7 @@ set(libclang-cpp_sources
   ${PROJECT_SOURCE_DIR}/src/File.cpp
   ${PROJECT_SOURCE_DIR}/src/Cursor.cpp
   ${PROJECT_SOURCE_DIR}/src/CursorKind.cpp
+  ${PROJECT_SOURCE_DIR}/src/Exception.cpp
   )
 add_library(clang++			SHARED ${libclang-cpp_sources})
 add_library(clang++-static	STATIC ${libclang-cpp_sources})
