@@ -44,6 +44,9 @@ class CLANGXX_API TranslationUnit: public std::enable_shared_from_this<Translati
 	TranslationUnit(UniqueCXTranslationUnit &&ptr, std::shared_ptr<Index> &index);
 
   public:
+	~TranslationUnit();
+
+  public:
 	CXTranslationUnit native_handle() const;
 
 	Cursor cursor() const {

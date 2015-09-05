@@ -190,6 +190,8 @@ TranslationUnit::TranslationUnit(UniqueCXTranslationUnit &&ptr, std::shared_ptr<
 	: m_impl(new Impl(std::move(ptr), index))
 {}
 
+TranslationUnit::~TranslationUnit() = default;
+
 CXTranslationUnit TranslationUnit::native_handle() const
 {
 	return m_impl->native_handle();

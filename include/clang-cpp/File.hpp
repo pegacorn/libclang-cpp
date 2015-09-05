@@ -40,7 +40,7 @@ class CLANGXX_API File
 	{}
 
   public:
-	~File() = default;
+	~File();
 
 	File(const File &) = delete;
 	File(File &&other) noexcept = default;

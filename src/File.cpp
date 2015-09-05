@@ -30,6 +30,8 @@ File File::from_name(std::shared_ptr<TranslationUnit> translation_unit,
 	return File(std::move(cx_file), translation_unit);
 }
 
+File::~File() = default;
+
 std::string File::name() const
 {
 	UniqueCXString cx_string(clang_getFileName(m_cx_file));

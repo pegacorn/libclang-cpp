@@ -9,6 +9,7 @@
 
 #include <memory>
 #include <utility>
+#include <vector>
 #include "clang-c/Index.h"
 #include "clang-cpp/CursorKind.hpp"
 #include "clang-cpp/switch_port.hpp"
@@ -35,7 +36,7 @@ class CLANGXX_API Cursor
 	{}
 
   public:
-	~Cursor() = default;
+	~Cursor();
 
 	Cursor(const Cursor &) = delete;
 	Cursor(Cursor &&other) noexcept = default;
@@ -49,6 +50,8 @@ class CLANGXX_API Cursor
 	}
 
 	std::string spelling() const;
+
+	std::vector<Cursor> get_children();
 }; // class Cursor
 
 } // namespace clangxx

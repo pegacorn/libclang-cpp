@@ -27,6 +27,8 @@ Cursor Cursor::from_result(std::shared_ptr<const TranslationUnit> translation_un
 	return Cursor(std::move(cx_cursor), translation_unit);
 }
 
+Cursor::~Cursor() = default;
+
 std::string Cursor::spelling() const
 {
 	UniqueCXString cx_string(clang_getCursorSpelling(m_cx_cursor));
@@ -35,6 +37,24 @@ std::string Cursor::spelling() const
 	}
 
 	return clang_getCString(cx_string.get());
+}
+
+std::vector<Cursor> Cursor::get_children()
+{
+	auto visitor = [](CXCursor cursor, CXCursor /*parent*/, CXClientData client_data) {
+		if ( is_null(cursor) ) {
+			CLANGXX_THROW_LogicError("cursor is null");
+		}
+		auto pair = static_cast<std::pair<std::vector<Cursor> *, Cursor *> *>(client_data);
+		pair->first->push_back(
+		  Cursor(std::move(cursor), pair->second->m_translation_unit));
+		return CXChildVisitResult::CXChildVisit_Continue;
+	};
+
+	std::vector<Cursor> children;
+	auto client_data = std::make_pair(&children, this);
+	clang_visitChildren(m_cx_cursor, visitor, &client_data);
+	return children;
 }
 
 } // namespace clangxx
