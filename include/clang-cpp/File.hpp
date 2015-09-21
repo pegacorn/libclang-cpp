@@ -23,30 +23,27 @@ class TranslationUnit;
 class CLANGXX_API File
 {
   public:
-	static File from_name(std::shared_ptr<TranslationUnit> translation_unit,
+	static File from_name(std::shared_ptr<const TranslationUnit> translation_unit,
 						  const std::string &file_name);
 
 //	static File from_cursor_result(Cursor cursor);
 
   private:
-	std::shared_ptr<TranslationUnit>	m_translation_unit;
+	std::shared_ptr<const TranslationUnit>	m_translation_unit;
 	// warning: define m_translation_unit before m_cx_file
 	CXFile	m_cx_file;
 
   private:
-	File(CXFile &&cx_file, std::shared_ptr<TranslationUnit> &translation_unit) noexcept
-		: m_translation_unit(translation_unit)
-		, m_cx_file(std::move(cx_file))
-	{}
+	File(CXFile &&cx_file, std::shared_ptr<const TranslationUnit> &translation_unit) noexcept;
 
   public:
 	~File();
 
-	File(const File &) = delete;
-	File(File &&other) noexcept = default;
+	File(const File &other);
+	File(File &&other) noexcept;
 
-	File &operator=(const File &) = delete;
-	File &operator=(File &&other) noexcept = default;
+	File &operator=(const File &other);
+	File &operator=(File &&other) noexcept;
 
   public:
 	std::string name() const;

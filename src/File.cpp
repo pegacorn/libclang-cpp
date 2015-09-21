@@ -19,7 +19,7 @@
 
 namespace clangxx {
 
-File File::from_name(std::shared_ptr<TranslationUnit> translation_unit,
+File File::from_name(std::shared_ptr<const TranslationUnit> translation_unit,
 					 const std::string &file_name)
 {
 	CXFile cx_file(clang_getFile(translation_unit->native_handle(), file_name.c_str()));
@@ -30,7 +30,18 @@ File File::from_name(std::shared_ptr<TranslationUnit> translation_unit,
 	return File(std::move(cx_file), translation_unit);
 }
 
+File::File(CXFile &&cx_file, std::shared_ptr<const TranslationUnit> &translation_unit) noexcept
+	: m_translation_unit(translation_unit)
+	, m_cx_file(std::move(cx_file))
+{}
+
 File::~File() = default;
+
+File::File(const File &/*other*/) = default;
+File::File(File &&/*other*/) noexcept = default;
+
+File &File::operator=(const File &/*other*/) = default;
+File &File::operator=(File &&/*other*/) noexcept = default;
 
 std::string File::name() const
 {

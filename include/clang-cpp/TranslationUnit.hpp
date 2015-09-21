@@ -41,13 +41,19 @@ class CLANGXX_API TranslationUnit: public std::enable_shared_from_this<Translati
 	std::unique_ptr<Impl>	m_impl;
 
   private:
-	TranslationUnit(UniqueCXTranslationUnit &&ptr, std::shared_ptr<Index> &index);
+	TranslationUnit(UniqueCXTranslationUnit &&ptr, std::shared_ptr<const Index> index);
 
   public:
 	~TranslationUnit();
 
+	TranslationUnit(const TranslationUnit &) = delete;
+	TranslationUnit(TranslationUnit &&other) noexcept;
+
+	TranslationUnit &operator=(const TranslationUnit &) = delete;
+	TranslationUnit &operator=(TranslationUnit &&other) noexcept;
+
   public:
-	CXTranslationUnit native_handle() const;
+	CXTranslationUnit native_handle() const noexcept;
 
 	Cursor cursor() const {
 		return Cursor::from_result(shared_from_this());
@@ -57,25 +63,25 @@ class CLANGXX_API TranslationUnit: public std::enable_shared_from_this<Translati
 
 //	get_includes();
 
-	File get_file(const std::string &filename) {
+	File get_file(const std::string &filename) const {
 		return File::from_name(shared_from_this(), filename);
 	}
 #if 0
 	std::unique_ptr<SourceLocation> get_location(
-	  const std::string &filename, unsigned offset)
+	  const std::string &filename, unsigned offset) const
 	{
 		auto file = get_file(filename);
 		return SourceLocation::from_offset(*this, file, offset);
 	}
 
 	std::unique_ptr<SourceLocation> get_location(
-	  const std::string &filename, const std::pair<unsigned, unsigned> &position)
+	  const std::string &filename, const std::pair<unsigned, unsigned> &position) const
 	{
 		auto file = get_file(filename);
 		return SourceLocation::from_position(*this, file, position);
 	}
 
-	get_extent(const std::string &filename, locations);
+	get_extent(const std::string &filename, locations) const;
 
 	diagnostics() const;
 #endif

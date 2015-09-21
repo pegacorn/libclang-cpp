@@ -86,18 +86,18 @@ class TranslationUnit::Impl
 	}
 
   private:
-	std::shared_ptr<Index>	m_index;
+	std::shared_ptr<const Index>	m_index;
 	// warning: define m_index before m_cx_translation_unit
 	UniqueCXTranslationUnit	m_cx_translation_unit;
 
   public:
-	Impl(UniqueCXTranslationUnit &&ptr, std::shared_ptr<Index> &index)
+	Impl(UniqueCXTranslationUnit &&ptr, std::shared_ptr<const Index> &index) noexcept
 		: m_index(index)
 		, m_cx_translation_unit(std::move(ptr))
 	{}
 
   public:
-	CXTranslationUnit native_handle() const {
+	CXTranslationUnit native_handle() const noexcept {
 		return m_cx_translation_unit.get();
 	}
 
@@ -186,13 +186,17 @@ std::shared_ptr<TranslationUnit> TranslationUnit::from_ast_file(
 	return Impl::from_ast_file(filename, index);
 }
 
-TranslationUnit::TranslationUnit(UniqueCXTranslationUnit &&ptr, std::shared_ptr<Index> &index)
+TranslationUnit::TranslationUnit(UniqueCXTranslationUnit &&ptr, std::shared_ptr<const Index> index)
 	: m_impl(new Impl(std::move(ptr), index))
 {}
 
 TranslationUnit::~TranslationUnit() = default;
 
-CXTranslationUnit TranslationUnit::native_handle() const
+TranslationUnit::TranslationUnit(TranslationUnit &&/*other*/) noexcept = default;
+
+TranslationUnit &TranslationUnit::operator=(TranslationUnit &&/*other*/) noexcept = default;
+
+CXTranslationUnit TranslationUnit::native_handle() const noexcept
 {
 	return m_impl->native_handle();
 }

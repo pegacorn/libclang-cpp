@@ -41,21 +41,20 @@ class CLANGXX_API CursorKind
 	}
 
   private:
-	CXCursorKind	m_cx_cursor_kind;
+	CXCursorKind	m_cx_cursor_kind{};
 
   public:
 	constexpr CursorKind() noexcept
-		: m_cx_cursor_kind{}
 	{}
 
 	CursorKind(CXCursorKind value, const std::string &name);
 
   public:
-	CXCursorKind value() const {
+	constexpr CXCursorKind value() const {
 		return m_cx_cursor_kind;
 	}
 
-	CXCursorKind from_param() const {
+	constexpr CXCursorKind from_param() const {
 		return value();
 	}
 
@@ -100,8 +99,8 @@ class CLANGXX_API CursorKind
 	std::string repr() const;
 
 #define clangxx_DEFINE_BINARY_OPERATOR(d_op) \
-	constexpr bool operator d_op(CursorKind rhs) const noexcept { \
-		return m_cx_cursor_kind d_op rhs.m_cx_cursor_kind; \
+	friend constexpr bool operator d_op(CursorKind lhs, CursorKind rhs) noexcept { \
+		return lhs.m_cx_cursor_kind d_op rhs.m_cx_cursor_kind; \
 	}
 
 clangxx_DEFINE_BINARY_OPERATOR(==)

@@ -26,4 +26,14 @@ std::shared_ptr<Index> Index::create(bool excludeDecls/* = false*/)
 	return std::shared_ptr<Index>(new Index(std::move(cx_index)));
 }
 
+Index::Index(UniqueCXIndex &&cx_index) noexcept
+	: m_cx_index(std::move(cx_index))
+{}
+
+Index::~Index() = default;
+
+Index::Index(Index &&/*other*/) noexcept = default;
+
+Index &Index::operator=(Index &&/*other*/) noexcept = default;
+
 } // namespace clangxx

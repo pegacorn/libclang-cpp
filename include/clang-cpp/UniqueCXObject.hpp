@@ -18,23 +18,23 @@
 namespace clangxx {
 
 template<class TCXObject>
-bool is_null(TCXObject cxObject)
+bool is_null(TCXObject cxObject) noexcept
 {
 	return cxObject == nullptr;
 }
 
-inline bool is_null(const CXString &cxString)
+inline bool is_null(const CXString &cxString) noexcept
 {
 	return cxString.data == nullptr;
 }
 
-inline bool is_null(const CXTUResourceUsage &cxTUResourceUsage)
+inline bool is_null(const CXTUResourceUsage &cxTUResourceUsage) noexcept
 {
 	return (cxTUResourceUsage.data == nullptr)
 		&& (cxTUResourceUsage.entries == nullptr);
 }
 
-inline bool is_null(const CXCursor &cx_cursor)
+inline bool is_null(const CXCursor &cx_cursor) noexcept
 {
 	static const CXCursor null_cursor(clang_getNullCursor());
 

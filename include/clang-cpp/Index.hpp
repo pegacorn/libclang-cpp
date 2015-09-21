@@ -28,18 +28,16 @@ class CLANGXX_API Index: public std::enable_shared_from_this<Index>
 	UniqueCXIndex	m_cx_index;
 
   private:
-	Index(UniqueCXIndex &&cx_index) noexcept
-		: m_cx_index(std::move(cx_index))
-	{}
+	Index(UniqueCXIndex &&cx_index) noexcept;
 
   public:
-	~Index() = default;
+	~Index();
 
 	Index(const Index &) = delete;
-	Index(Index &&other) noexcept = default;
+	Index(Index &&other) noexcept;
 
 	Index &operator=(const Index &) = delete;
-	Index &operator=(Index &&other) noexcept = default;
+	Index &operator=(Index &&other) noexcept;
 
   public:
 	CXIndex	native_handle() const noexcept {

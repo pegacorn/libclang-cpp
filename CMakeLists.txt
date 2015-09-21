@@ -43,7 +43,7 @@ set_target_properties(clang++-static
 
 # TODO: プラットフォーム依存したくないので、CMAKE_CXX_FLAGSはCMakeで何とかできないか？
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 elseif(MSVC)
 #  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /I<clang-c-include-dir> /L<clang-c-lib-dir>")
 endif()
